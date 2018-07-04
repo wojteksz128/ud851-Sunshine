@@ -11,17 +11,24 @@ public class DetailActivity extends AppCompatActivity {
 
     private String mForecast;
     private TextView mWeatherDisplay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        // DONE (2) Display the weather forecast that was passed from MainActivity
         mWeatherDisplay = (TextView) findViewById(R.id.tv_display_weather);
-        final Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            mForecast = intent.getStringExtra(Intent.EXTRA_TEXT);
-            mWeatherDisplay.setText(mForecast);
+
+        Intent intentThatStartedThisActivity = getIntent();
+
+        if (intentThatStartedThisActivity != null) {
+            if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
+                mForecast = intentThatStartedThisActivity.getStringExtra(Intent.EXTRA_TEXT);
+                mWeatherDisplay.setText(mForecast);
+            }
         }
     }
+
+    // TODO (3) Create a menu with an item with id of action_share
+    // TODO (4) Display the menu and implement the forecast sharing functionality
 }
