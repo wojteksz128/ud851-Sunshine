@@ -24,6 +24,12 @@
     <!--or something similar.-->
     <string name="app_name">Sunshine</string>
 
+    <!--Used in overflow menu to refresh weather data-->
+    <string name="action_refresh">Refresh</string>
+
+    <!--DONE (1) Add a string resource for your error message-->
+    <string name="network_error">Something goes wrong :(</string>
+
 
     <!-- - - - - - - - - - - - - -->
     <!--Used by SunshineDateUtils-->
