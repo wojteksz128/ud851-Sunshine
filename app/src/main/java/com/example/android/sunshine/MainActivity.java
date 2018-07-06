@@ -346,13 +346,9 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
 
-        // DONE (1) Add new Activity called SettingsActivity using Android Studio wizard
-        // Do step 2 in SettingsActivity
-        // DONE (2) Set setDisplayHomeAsUpEnabled to true on the support ActionBar
-
-        // DONE (6) Launch SettingsActivity when the Settings option is clicked
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
+            Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
+            startActivity(startSettingsActivity);
             return true;
         }
 
