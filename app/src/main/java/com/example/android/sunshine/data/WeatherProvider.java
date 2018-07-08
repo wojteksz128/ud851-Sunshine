@@ -26,8 +26,6 @@ import android.support.annotation.NonNull;
 
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 
-import static com.example.android.sunshine.data.WeatherContract.WeatherEntry.COLUMN_DATE;
-
 /**
  * This class serves as the ContentProvider for all of Sunshine's data. This class allows us to
  * bulkInsert data, query data, and delete data.
@@ -127,7 +125,6 @@ public class WeatherProvider extends ContentProvider {
         return true;
     }
 
-//  DONE (1) Implement the bulkInsert method
     /**
      * Handles requests to insert a set of new rows. In Sunshine, we are only going to be
      * inserting multiple rows of data at a time from a weather forecast. There is no use case
@@ -146,16 +143,18 @@ public class WeatherProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         switch (sUriMatcher.match(uri)) {
-            // DONE (2) Only perform our implementation of bulkInsert if the URI matches the CODE_WEATHER code
+
             case CODE_WEATHER:
-                int rowsInserted = 0;
                 db.beginTransaction();
+                int rowsInserted = 0;
                 try {
                     for (ContentValues value : values) {
-                        long weatherDate = value.getAsLong(COLUMN_DATE);
+                        long weatherDate =
+                                value.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE);
                         if (!SunshineDateUtils.isDateNormalized(weatherDate)) {
                             throw new IllegalArgumentException("Date must be normalized to insert");
                         }
+
                         long _id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             rowsInserted++;
@@ -165,13 +164,13 @@ public class WeatherProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
+
                 if (rowsInserted > 0) {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
 
-                // DONE (3) Return the number of rows inserted from our implementation of bulkInsert
                 return rowsInserted;
-            // DONE (4) If the URI does match match CODE_WEATHER, return the super implementation of bulkInsert
+
             default:
                 return super.bulkInsert(uri, values);
         }
@@ -253,7 +252,7 @@ public class WeatherProvider extends ContentProvider {
                          * within the selectionArguments array will be inserted into the
                          * selection statement by SQLite under the hood.
                          */
-                        COLUMN_DATE + " = ? ",
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " = ? ",
                         selectionArguments,
                         null,
                         null,
@@ -294,6 +293,7 @@ public class WeatherProvider extends ContentProvider {
         return cursor;
     }
 
+//  TODO (1) Implement the delete method of the ContentProvider
     /**
      * Deletes data at a given URI with optional arguments for more fine tuned deletions.
      *
@@ -305,6 +305,10 @@ public class WeatherProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         throw new RuntimeException("Student, you need to implement the delete method!");
+
+//          TODO (2) Only implement the functionality, given the proper URI, to delete ALL rows in the weather table
+
+//      TODO (3) Return the number of rows deleted
     }
 
     /**
