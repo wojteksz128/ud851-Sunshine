@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_forecast);
         getSupportActionBar().setElevation(0f);
 
+        // TODO (12) Remove the fake data creation since we can now sync with live data
         FakeDataUtils.insertFakeData(this);
 
         /*
@@ -153,6 +154,8 @@ public class MainActivity extends AppCompatActivity implements
          * the last created loader is re-used.
          */
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
+
+        //  TODO (13) Call SunshineSyncUtils's startImmediateSync method
 
     }
 
@@ -257,15 +260,14 @@ public class MainActivity extends AppCompatActivity implements
         mForecastAdapter.swapCursor(null);
     }
 
-    //  DONE (38) Refactor onClick to accept a long instead of a String as its parameter
     /**
      * This method is for responding to clicks from our list.
      *
-     * @param date String describing weather details for a particular day
+     * @param date Normalized UTC time that represents the local date of the weather in GMT time.
+     * @see WeatherContract.WeatherEntry#COLUMN_DATE
      */
     @Override
     public void onClick(long date) {
-//      DONE (39) Refactor onClick to build a URI for the clicked date and and pass it with the Intent using setData
         Intent weatherDetailIntent = new Intent(MainActivity.this, DetailActivity.class);
         Uri uriForDateClicked = WeatherContract.WeatherEntry.buildWeatherUriWithDate(date);
         weatherDetailIntent.setData(uriForDateClicked);
