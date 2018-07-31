@@ -1,4 +1,4 @@
-package com.example.android.sunshine.sync;/*
+/*
  * Copyright (C) 2016 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,36 +13,43 @@ package com.example.android.sunshine.sync;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example.android.sunshine.sync;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
+import com.firebase.jobdispatcher.RetryStrategy;
 
-// DONE (2) Make sure you've imported the jobdispatcher.JobService, not job.JobService
-// DONE (3) Add a class called SunshineFirebaseJobService that extends jobdispatcher.JobService
+
 public class SunshineFirebaseJobService extends JobService {
 
-    //  DONE (4) Declare an ASyncTask field called mFetchWeatherTask
     private AsyncTask<Void, Void, Void> mFetchWeatherTask;
 
-    //  DONE (5) Override onStartJob and within it, spawn off a separate ASyncTask to sync weather data
-    @SuppressLint("StaticFieldLeak")
+    /**
+     * The entry point to your Job. Implementations should offload work to another thread of
+     * execution as soon as possible.
+     *
+     * This is called by the Job Dispatcher to tell us we should start our job. Keep in mind this
+     * method is run on the application's main thread, so we need to offload work to a background
+     * thread.
+     *
+     * @return whether there is more work remaining.
+     */
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
 
-        mFetchWeatherTask = new AsyncTask<Void, Void, Void>() {
-
+        mFetchWeatherTask = new AsyncTask<Void, Void, Void>(){
             @Override
             protected Void doInBackground(Void... voids) {
-                final Context context = getApplicationContext();
+                Context context = getApplicationContext();
                 SunshineSyncTask.syncWeather(context);
+                jobFinished(jobParameters, false);
                 return null;
             }
 
-            // DONE (6) Once the weather data is sync'd, call jobFinished with the appropriate arguments
             @Override
             protected void onPostExecute(Void aVoid) {
                 jobFinished(jobParameters, false);
@@ -53,8 +60,14 @@ public class SunshineFirebaseJobService extends JobService {
         return true;
     }
 
-
-    //  DONE (7) Override onStopJob, cancel the ASyncTask if it's not null and return true
+    /**
+     * Called when the scheduling engine has decided to interrupt the execution of a running job,
+     * most likely because the runtime constraints associated with the job are no longer satisfied.
+     *
+     * @return whether the job should be retried
+     * @see Job.Builder#setRetryStrategy(RetryStrategy)
+     * @see RetryStrategy
+     */
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
         if (mFetchWeatherTask != null) {
@@ -63,4 +76,3 @@ public class SunshineFirebaseJobService extends JobService {
         return true;
     }
 }
-
