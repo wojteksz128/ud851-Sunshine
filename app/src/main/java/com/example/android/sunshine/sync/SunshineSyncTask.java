@@ -76,7 +76,6 @@ public class SunshineSyncTask {
                         WeatherContract.WeatherEntry.CONTENT_URI,
                         weatherValues);
 
-//              DONE (13) Check if notifications are enabled
                 /*
                  * Finally, after we insert data into the ContentProvider, determine whether or not
                  * we should notify the user that the weather has been refreshed.
@@ -91,10 +90,16 @@ public class SunshineSyncTask {
                 long timeSinceLastNotification = SunshinePreferences
                         .getEllapsedTimeSinceLastNotification(context);
 
-//              DONE (14) Check if a day has passed since the last notification
-                boolean oneDayPassedSinceLastNotification = timeSinceLastNotification >= DateUtils.DAY_IN_MILLIS;
+                boolean oneDayPassedSinceLastNotification = false;
 
-//              DONE (15) If more than a day have passed and notifications are enabled, notify the user
+                if (timeSinceLastNotification >= DateUtils.DAY_IN_MILLIS) {
+                    oneDayPassedSinceLastNotification = true;
+                }
+
+                /*
+                 * We only want to show the notification if the user wants them shown and we
+                 * haven't shown a notification in the past day.
+                 */
                 if (notificationsEnabled && oneDayPassedSinceLastNotification) {
                     NotificationUtils.notifyUserOfNewWeather(context);
                 }
